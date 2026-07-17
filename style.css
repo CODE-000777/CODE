@@ -1,0 +1,588 @@
+/* ==========================================================================
+   1. COLOR SCHEME DEFINITIONS & THEME ENGINE
+   ========================================================================== */
+:root {
+    --transition-smooth: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-fast: all 0.2s ease;
+}
+
+/* Theme A: Charcoal Premium Black */
+.theme-charcoal {
+    --bg-primary: #0a0a0c;
+    --bg-secondary: #121215;
+    --text-primary: #f5f5f7;
+    --text-secondary: #86868b;
+    --accent: #ffffff;
+    --glass-bg: rgba(18, 18, 21, 0.5);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --ribbed-line: rgba(255, 255, 255, 0.03);
+    --shadow-soft: rgba(0, 0, 0, 0.5);
+    --logo-glow-color: rgba(255, 255, 255, 0.25);
+    --card-hover-bg: #1c1c21;
+}
+
+/* Theme B: Royal Faded Glow Maroon */
+.theme-maroon {
+    --bg-primary: #120305;
+    --bg-secondary: #1d070b;
+    --text-primary: #fcebeb;
+    --text-secondary: #b58d92;
+    --accent: #e53e5e;
+    --glass-bg: rgba(29, 7, 11, 0.55);
+    --glass-border: rgba(229, 62, 94, 0.15);
+    --ribbed-line: rgba(229, 62, 94, 0.04);
+    --shadow-soft: rgba(0, 0, 0, 0.7);
+    --logo-glow-color: rgba(229, 62, 94, 0.35);
+    --card-hover-bg: #290b11;
+}
+
+/* Theme C: Royal Marble Foggy White */
+.theme-marble {
+    --bg-primary: #f4f4f7;
+    --bg-secondary: #ffffff;
+    --text-primary: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --accent: #000000;
+    --glass-bg: rgba(255, 255, 255, 0.6);
+    --glass-border: rgba(0, 0, 0, 0.06);
+    --ribbed-line: rgba(0, 0, 0, 0.02);
+    --shadow-soft: rgba(0, 0, 0, 0.05);
+    --logo-glow-color: rgba(0, 0, 0, 0.12);
+    --card-hover-bg: #eaeaea;
+}
+
+/* ==========================================================================
+   2. SYSTEM RESET & BASE STYLING (Lag Prevention)
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    transition: background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* ==========================================================================
+   3. APPLE-INSPIRED GLOWING LOGO ("CODE")
+   ========================================================================== */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 0 40px;
+    z-index: 1000;
+    background: transparent;
+}
+
+.nav-left .curator-tag {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+}
+
+.logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--text-primary);
+    position: relative;
+    cursor: default;
+    /* Foggy Aura Outline Glow */
+    text-shadow: 
+        0 0 10px var(--logo-glow-color),
+        0 0 25px var(--logo-glow-color);
+    transition: var(--transition-smooth);
+}
+
+.logo:hover {
+    letter-spacing: 0.25em;
+    transform: scale(1.02);
+}
+
+/* ==========================================================================
+   4. THEME OPTIONS & SETTINGS (Nike/Apple Interface)
+   ========================================================================== */
+.nav-right {
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
+}
+
+.settings-btn {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 30px;
+    color: var(--text-primary);
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    backdrop-filter: blur(10px);
+    transition: var(--transition-smooth);
+}
+
+.settings-btn:hover {
+    transform: translateY(-2px);
+    background: var(--text-primary);
+    color: var(--bg-primary);
+}
+
+.settings-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.settings-panel {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(25px);
+    border-radius: 18px;
+    padding: 16px;
+    width: 280px;
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 10px 40px var(--shadow-soft);
+    z-index: 1001;
+    animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.settings-panel.active {
+    display: flex;
+}
+
+.panel-header {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.theme-opt {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-primary);
+    text-align: left;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: var(--transition-fast);
+}
+
+.theme-opt:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.theme-opt.active {
+    border-color: var(--glass-border);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.color-preview {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.color-preview.charcoal { background: #121215; }
+.color-preview.maroon { background: #e53e5e; }
+.color-preview.marble { background: #ffffff; border-color: rgba(0, 0, 0, 0.15); }
+
+/* ==========================================================================
+   5. WAVY RIBBED GLASS SEARCH BAR
+   ========================================================================== */
+.search-container {
+    position: fixed;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 80px);
+    max-width: 650px;
+    z-index: 999;
+}
+
+.search-bar {
+    position: relative;
+    width: 100%;
+    height: 55px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px 0 24px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 12px 30px var(--shadow-soft);
+    
+    /* Double Glass Layering for Authentic Depth */
+    background: var(--glass-bg);
+    backdrop-filter: blur(25px) saturate(180%);
+    
+    /* Wavy Ribbed / Fluted Glass Texture Mask Layer */
+    background-image: repeating-linear-gradient(
+        90deg, 
+        var(--ribbed-line) 0px, 
+        var(--ribbed-line) 2px, 
+        transparent 2px, 
+        transparent 6px
+    );
+    transition: var(--transition-smooth);
+}
+
+.search-bar:focus-within {
+    box-shadow: 0 20px 40px var(--shadow-soft);
+    transform: scale(1.015);
+    border-color: var(--text-secondary);
+}
+
+.search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.search-input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+/* ==========================================================================
+   6. SEARCH WITH PHOTO: DARK ROTATING RGB GLOW
+   ========================================================================== */
+.photo-search-wrapper {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.photo-search-btn {
+    background: var(--bg-primary);
+    border: none;
+    color: var(--text-primary);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    z-index: 3;
+    transition: var(--transition-fast);
+}
+
+.lens-icon {
+    width: 18px;
+    height: 18px;
+    stroke: var(--text-secondary);
+    transition: var(--transition-fast);
+}
+
+/* Kinetic RGB Glow Track (Hidden by default, fades in on hover) */
+.rgb-glow-track {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    z-index: 1;
+    background: conic-gradient(
+        #ff003c, #1a0066, #00d9ff, #1a0066, #ff003c
+    );
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    animation: rotateRGB 4s linear infinite;
+}
+
+/* Hover States for Photo Search Button */
+.photo-search-wrapper:hover .rgb-glow-track {
+    opacity: 1;
+}
+
+.photo-search-wrapper:hover .lens-icon {
+    stroke: var(--text-primary);
+}
+
+@keyframes rotateRGB {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* ==========================================================================
+   7. PINTEREST & COSMOS INSPIRED MASONRY GRID (Fluid & Fast)
+   ========================================================================== */
+.gallery-wrapper {
+    margin-top: 190px;
+    padding: 0 40px 60px 40px;
+    width: 100%;
+}
+
+.masonry-grid {
+    column-count: 4;
+    column-gap: 24px;
+    width: 100%;
+}
+
+@media (max-width: 1200px) {
+    .masonry-grid { column-count: 3; }
+}
+@media (max-width: 800px) {
+    .masonry-grid { column-count: 2; }
+    .navbar { padding: 0 20px; }
+    .gallery-wrapper { padding: 0 20px 40px 20px; }
+}
+@media (max-width: 500px) {
+    .masonry-grid { column-count: 1; }
+    .search-container { width: calc(100% - 40px); }
+    .logo { font-size: 1.5rem; }
+}
+
+/* ==========================================================================
+   8. CARD ELEMENTS (Minimalist Luxury / Nike Aesthetic)
+   ========================================================================== */
+.card {
+    background-color: var(--bg-secondary);
+    border-radius: 20px;
+    margin-bottom: 24px;
+    overflow: hidden;
+    break-inside: avoid;
+    position: relative;
+    cursor: pointer;
+    border: 1px solid var(--glass-border);
+    transition: var(--transition-smooth);
+}
+
+.card:hover {
+    transform: translateY(-8px) scale(1.015);
+    background-color: var(--card-hover-bg);
+    box-shadow: 0 20px 40px var(--shadow-soft);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.card-img-container {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    background: var(--bg-primary);
+}
+
+.card-img-container img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card:hover .card-img-container img {
+    transform: scale(1.04);
+}
+
+.card-info {
+    padding: 16px 20px;
+}
+
+.card-meta {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.card-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.4;
+}
+
+/* ==========================================================================
+   9. CARD DETAIL MODAL (Apple Style Expansion)
+   ========================================================================== */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(15px);
+    z-index: 2000;
+    display: none;
+    place-items: center;
+    padding: 20px;
+}
+
+.modal-backdrop.active {
+    display: grid;
+}
+
+.modal-content {
+    background: var(--bg-secondary);
+    border: 1px solid var(--glass-border);
+    max-width: 900px;
+    width: 100%;
+    border-radius: 24px;
+    position: relative;
+    overflow: hidden;
+    animation: scaleUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.close-modal {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #ffffff;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    z-index: 10;
+    transition: var(--transition-fast);
+}
+
+.close-modal:hover {
+    background: #ffffff;
+    color: #000000;
+}
+
+.modal-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+}
+
+@media (max-width: 768px) {
+    .modal-grid { grid-template-columns: 1fr; }
+}
+
+.modal-img-container {
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-img-container img {
+    width: 100%;
+    max-height: 550px;
+    object-fit: contain;
+}
+
+.modal-details {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.details-category {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+#modalTitle {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+
+#modalAuthor {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.action-btn-primary {
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.action-btn-primary:hover {
+    opacity: 0.9;
+}
+
+.action-btn-secondary {
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.action-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* ==========================================================================
+   10. KEYFRAME ANIMATIONS
+   ========================================================================== */
+@keyframes slideDown {
+    from { transform: translateY(-10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes scaleUp {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
